@@ -2,6 +2,7 @@ package rest
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -44,7 +45,7 @@ func (a *Adapter) Run() error {
 	log.Printf("REST server starting on port %d", a.port)
 
 	// ListenAndServe blocks until server is shut down
-	if err := a.server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+	if err := a.server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return fmt.Errorf("failed to serve REST on port %d: %w", a.port, err)
 	}
 	return nil
