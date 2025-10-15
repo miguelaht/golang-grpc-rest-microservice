@@ -21,7 +21,7 @@ jobs:
       # Checkout the code as the first step.
       - checkout
       - run:
-          name: "Say hello"
+          name: "Print hello"
           command: "echo Hello, World!"
   code-quality:
     machine:
