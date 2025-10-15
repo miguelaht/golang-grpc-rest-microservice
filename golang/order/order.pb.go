@@ -7,6 +7,7 @@
 package order
 
 import (
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -277,7 +278,7 @@ var File_order_proto protoreflect.FileDescriptor
 
 const file_order_proto_rawDesc = "" +
 	"\n" +
-	"\vorder.proto\"Z\n" +
+	"\vorder.proto\x1a\x1cgoogle/api/annotations.proto\"Z\n" +
 	"\x12CreateOrderRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\x03R\x06userId\x12+\n" +
 	"\vorder_items\x18\x02 \x03(\v2\n" +
@@ -296,9 +297,9 @@ const file_order_proto_rawDesc = "" +
 	"\auser_id\x18\x01 \x01(\x03R\x06userId\x12+\n" +
 	"\vorder_items\x18\x02 \x03(\v2\n" +
 	".OrderItemR\n" +
-	"orderItems2l\n" +
-	"\x05Order\x125\n" +
-	"\x06Create\x12\x13.CreateOrderRequest\x1a\x14.CreateOrderResponse\"\x00\x12,\n" +
+	"orderItems2\x85\x01\n" +
+	"\x05Order\x12N\n" +
+	"\x06Create\x12\x13.CreateOrderRequest\x1a\x14.CreateOrderResponse\"\x19\x82\xd3\xe4\x93\x02\x13:\x01*\"\x0e/orders/create\x12,\n" +
 	"\x03Get\x12\x10.GetOrderRequest\x1a\x11.GetOrderResponse\"\x00B0Z.github.com/miguelaht/microservices-proto/orderb\x06proto3"
 
 var (

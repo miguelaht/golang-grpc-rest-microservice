@@ -3,25 +3,11 @@ package rest
 import (
 	"context"
 
+	"github.com/miguelaht/microservices/order/golang/order"
 	"github.com/miguelaht/microservices/order/internal/application/core/domain"
 )
 
-type CreateOrderRequest struct {
-	UserId     int64       `json:"user_id"`
-	OrderItems []OrderItem `json:"order_items"`
-}
-
-type OrderItem struct {
-	ProductCode string  `json:"product_code"`
-	UnitPrice   float32 `json:"unit_price"`
-	Quantity    int32   `json:"quantity"`
-}
-
-type CreateOrderResponse struct {
-	OrderId int64 `json:"order_id"`
-}
-
-func (a Adapter) Create(ctx context.Context, request *CreateOrderRequest) (*CreateOrderResponse, error) {
+func (a *Adapter) Create(ctx context.Context, request *order.CreateOrderRequest) (*order.CreateOrderResponse, error) {
 	var orderItems []domain.OrderItem
 	for _, orderItem := range request.OrderItems {
 		orderItems = append(orderItems, domain.OrderItem{
@@ -35,5 +21,5 @@ func (a Adapter) Create(ctx context.Context, request *CreateOrderRequest) (*Crea
 	if err != nil {
 		return nil, err
 	}
-	return &CreateOrderResponse{OrderId: result.ID}, nil
+	return &order.CreateOrderResponse{OrderId: result.ID}, nil
 }

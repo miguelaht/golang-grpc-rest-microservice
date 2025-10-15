@@ -7,7 +7,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gin-gonic/gin"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/miguelaht/microservices/order/golang/order"
 	"github.com/miguelaht/microservices/order/internal/ports"
 )
 
@@ -15,6 +16,7 @@ type Adapter struct {
 	api    ports.APIPort
 	port   int
 	server *http.Server
+	order.UnimplementedOrderServer
 }
 
 func NewAdapter(api ports.APIPort, port int) *Adapter {
@@ -25,15 +27,15 @@ func NewAdapter(api ports.APIPort, port int) *Adapter {
 }
 
 func (a *Adapter) Run() error {
-	router := gin.Default()
+	ctx := context.Background()
+	mux := runtime.NewServeMux()
 
-	// Register routes
-	router.POST("/Order/Create", a.createOrderHandler)
+	order.RegisterOrderHandlerServer(ctx, mux, a)
 
 	// Create HTTP server
 	a.server = &http.Server{
 		Addr:         fmt.Sprintf(":%d", a.port),
-		Handler:      router,
+		Handler:      mux,
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 15 * time.Second,
 		IdleTimeout:  60 * time.Second,
@@ -45,8 +47,8 @@ func (a *Adapter) Run() error {
 	if err := a.server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		return fmt.Errorf("failed to serve REST on port %d: %w", a.port, err)
 	}
-
 	return nil
+
 }
 
 // Shutdown gracefully stops the REST server
@@ -63,25 +65,4 @@ func (a *Adapter) Shutdown(ctx context.Context) error {
 
 	log.Println("REST server stopped gracefully")
 	return nil
-}
-
-// Handler methods
-func (a *Adapter) createOrderHandler(c *gin.Context) {
-	var order CreateOrderRequest
-	if err := c.ShouldBindJSON(&order); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid request body",
-		})
-		return
-	}
-
-	res, err := a.Create(c.Request.Context(), &order)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	c.JSON(http.StatusOK, res)
 }
