@@ -35,11 +35,13 @@ func NewAdapter(paymentServiceUrl string) (*Adapter, error) {
 }
 
 func (a *Adapter) Charge(order *domain.Order) error {
-	ctx, _ := context.WithDeadline(context.Background(), time.Now().Add(1*time.Second))
+	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(1*time.Second))
+	defer cancel()
 	_, err := a.payment.Create(ctx, &payment.CreatePaymentRequest{
 		UserId:     order.CustomerID,
 		OrderId:    order.ID,
 		TotalPrice: order.TotalPrice(),
 	})
+
 	return err
 }
